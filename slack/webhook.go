@@ -16,12 +16,12 @@ type WebHook struct {
 }
 
 // NewWebhook will create simple webhook instance
-func NewWebhook(url string) *WebHook {
+func NewWebhook(url string) WebHook {
 	defaultColor := "#FF5733"
 	attachment1 := slack.Attachment{}
 	attachment1.Color = &defaultColor
 
-	webhook := &WebHook{
+	webhook := WebHook{
 		URL:        url,
 		Attachment: []slack.Attachment{attachment1},
 	}
