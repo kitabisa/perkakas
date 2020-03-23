@@ -14,3 +14,7 @@ if err != nil {
     fmt.Println(err.Error())
 }
 ```
+
+The code will produce this kind of message:
+
+![sample message img](https://user-images.githubusercontent.com/9508513/77311868-83c97880-6d33-11ea-9f0a-b868ec4dfaa7.png)
