@@ -8,6 +8,7 @@ slackMsg.AddField("Name", "Mau tau aja")
 slackMsg.AddField("Phonenumber", "081211113333")
 slackMsg.AddField("Email", "qwe@testing.com")
 slackMsg.AddText("Hello from Tuman-app staging")
+slackMsg.SetChannelMention(true)
 
 err := slackMsg.Send()
 if err != nil {
