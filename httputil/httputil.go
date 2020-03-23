@@ -73,3 +73,19 @@ func KitabisaHeader(req *http.Request, clientName, clientVersion, requestID stri
 	req.Header.Set("X-Ktbs-Time", timestamp)
 	return req
 }
+
+func IsSuccess(code int) bool {
+	return code >= 200 && code <= 299
+}
+
+func IsClientError(code int) bool {
+	return code >= 400 && code <= 499
+}
+
+func IsRedirection(code int) bool {
+	return code >= 300 && code <= 399
+}
+
+func IsServerError(code int) bool {
+	return code >= 500 && code <= 599
+}

@@ -2,6 +2,7 @@ package httputil
 
 import (
 	"github.com/stretchr/testify/assert"
+	"net/http"
 	"testing"
 )
 
@@ -15,4 +16,36 @@ func TestExcludeSensitiveRequestBody(t *testing.T) {
 
 	match = passRemover.MatchString(sourceText)
 	assert.False(t, match)
+}
+
+func TestIsSuccess(t *testing.T) {
+	code := http.StatusOK
+	assert.True(t, IsSuccess(code))
+
+	failCode := http.StatusBadGateway
+	assert.False(t, IsSuccess(failCode))
+}
+
+func TestIsRedirection(t *testing.T) {
+	code := http.StatusMovedPermanently
+	assert.True(t, IsRedirection(code))
+
+	failCode := http.StatusBadGateway
+	assert.False(t, IsRedirection(failCode))
+}
+
+func TestIsClientError(t *testing.T) {
+	code := http.StatusNotAcceptable
+	assert.True(t, IsClientError(code))
+
+	failCode := http.StatusBadGateway
+	assert.False(t, IsRedirection(failCode))
+}
+
+func TestIsServerError(t *testing.T) {
+	code := http.StatusBadGateway
+	assert.True(t, IsServerError(code))
+
+	failCode := http.StatusOK
+	assert.False(t, IsServerError(failCode))
 }
