@@ -239,7 +239,7 @@ func (l *Logger) addMessageStack(msg ...message) {
 func ensureStackType(stack interface{}) (val []message) {
 	val, ok := stack.([]message)
 	if !ok {
-		panic("perkakas/log: stack trace is expecting a message but found other types")
+		return []message{}
 	}
 
 	return
