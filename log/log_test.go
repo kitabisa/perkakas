@@ -1,8 +1,11 @@
 package log
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -24,6 +27,12 @@ type LogTestSuite struct {
 }
 
 func (suite *LogTestSuite) SetupTest() {
+	var toml = []byte(`
+		[log]
+		level = "error"
+		`)
+	viper.SetConfigType("toml")
+	viper.ReadConfig(bytes.NewBuffer(toml))
 	suite.Logger = NewLogger("test")
 	suite.logID = "3891967c-8589-42e0-a493-4fb6a0287992" // should be dynamic uuid. This static uuid was for testing purpose
 	suite.host = "https://programming-quotes-api.herokuapp.com"
@@ -98,6 +107,10 @@ func (suite *LogTestSuite) TestFindMaxLevel() {
 	
 	maxLevel := suite.Logger.findMaxLevel(msgs)
 	assert.Equal(suite.T(), ErrorLevel, maxLevel)
+}
+
+func (suite *LogTestSuite) TestUseLevelFromConfig() {
+	assert.Equal(suite.T(), suite.Logger.logger.Level, log.ErrorLevel)
 }
 
 func TestLogTestSuite(t *testing.T) {

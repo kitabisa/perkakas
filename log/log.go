@@ -253,7 +253,19 @@ func newLog(formatter log.Formatter, out io.Writer, level log.Level, reportCalle
 
 	return
 }
+func getLevelFromConfig() log.Level {
+	conf, err := newConfig()
+	defaultLevel := log.DebugLevel
+	if err != nil {
+		return defaultLevel
+	}
+	level, err := log.ParseLevel(conf.Log.Level)
+	if err != nil {
+		return defaultLevel
+	}
+	return level
 
+}
 func newLogger(serviceName string, logID string) (logger *Logger) {
 	formatter := &log.JSONFormatter{
 		TimestampFormat: time.RFC3339,
@@ -263,7 +275,7 @@ func newLogger(serviceName string, logID string) (logger *Logger) {
 		},
 	}
 
-	newLogger := newLog(formatter, os.Stdout, log.TraceLevel, false)
+	newLogger := newLog(formatter, os.Stdout, getLevelFromConfig(), false)
 
 	logger = new(Logger)
 	logger.logger = newLogger
