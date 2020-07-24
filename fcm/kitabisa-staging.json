@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "kitabisa-staging-8afb8",
+    "private_key_id": "b78daa0f5e4b4fb9b6f2c3947597a1016d2dfd09",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCfDNUISQnjqQCK\nUMo1qbxni+x6R4QnqsAdlf5VryoMFAiduDx4fiOuTMsTskA0PD/p/SQ6BUnGJSkv\nDke/8/YA5T1kH8MXc1eYsqc6qD3gFP1jZEaDXC4K7WEgzMkeDGo5MwQuqXTf/uh7\nbNSuTLfDYTQQ1iQes0sMyTRX6bFzqwJzXLTlNmu4s1IG4u2BVSMmpNlf5dZPAq4l\noW61emTbtUif/up5sf6iODwpTD9gG1/sM53BBPX2CnYzloSTGpyip4+5PjqmOFSl\n5NaX2zTV5JD64Fx5nEtPEb3hS+wOv12pS1Zw9VKZiPBbzBvC58v3xP9e6IjZjKWK\nFBXdy8SnAgMBAAECggEAAkjvaIqQE06yvMnzVbkGBWDLuWf8nItF7kbg2/9Dtd+1\nzfo/GCYLwi3FPxew928kJermkdTQngGbqVrlqfrJvnKMorsYFOapy/5JC70uAmGa\n0Eo4/xscaDjHy+5VN1LLVd4HQdpaXPtvAJLsLULZ4vsrAdDpvO0rd1gOofKwA27c\nMm51c0H095FUnLY8bmr+ejPM4bc7qvb3H6sqkTcIu+nhpk09gBDydXSarOtdkpUb\nweZtFocOcNkJCOi5Fv7XHT69keOdGrsV8SJLXJzzC8T7lwuifEUAMo2QrcxmCfqV\n7Fx8091XOIQpLofaBokhF5uaWJT5NIbgN0vGbx1LyQKBgQDKReR4WvIQmjqFXXo+\nDgoWBkE6cr7pBnmrBpEex4IGu8JjyphV7BSskHtPEupy26NRWpp/KOBlXcem4VVP\nN73UCrD8sqInNk/HQIXAuuQuXC4kItaJklUc1d5cYN+AKoTC1P3IVWJSfU1FeroV\nXtrqakyc9jfh3OpMQpWvQmfDaQKBgQDJS+F/GS3cz89aUEPNlxG1HIHHknClLKDq\nejWinxb4lPkha0BLmVIhskgbThyZ0i9djiY+AxlKD6JquyP6kM+iXhYqcUh3Z7MT\nYtwp35lyOhQimxH4/xLZN1PyVDe3PjIzyond89SBtm+vCqm7yHpJ5ndx/kmoWKcK\ng/7QaJ4VjwKBgDfxqMUY8kZhQbpNJlgvbd61kCjoP6EXp2MEB/MpXu8Z0yPijsuE\n5hrsQw6Vvr5RvRPtKTnuRlIC5Atl20BzvE7/PgBGL88EmIAVemjZx+6ClEhuUkPu\ncxfslvmZ2XcLS3jPi/lylCUYftyumvT6LTYUfGgVOVOA1FSPPfMhPK2xAoGACtVJ\nmnR5cmPArgSZ0YuqyUtydJId+9WuB1ByaIEVVGV4DuNdv3PN5sBYfxeyFFkqcWeA\nCWBTURgMTqAprId0lTFpEfmsw7hR+94bKSm+cVZM1RvxWKwpkIUYwHbl1LfFLeJd\njxNbQWvXEN2LCu8cHbQIg5sCzcuPmdJGuWKX92MCgYEAgX5EA6CzRt93VsfvbNcC\nfYJ5wF1kGB3eC4wpsLwQTbhWy08+Fjqn7ZA6w2NlWlGpjoqpTJA1rT4XcIPnqoGq\nlkoOQIoOQx86wtfIuWGlRKNJz4qvn8jXIBXzVX7CtJ8VcGWIXa20cSS69NTxgZ0X\nEOC7bfaYNaEK7uHVbv1DRbM=\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-ktiy0@kitabisa-staging-8afb8.iam.gserviceaccount.com",
+    "client_id": "107358836303050335281",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-ktiy0%40kitabisa-staging-8afb8.iam.gserviceaccount.com"
+}

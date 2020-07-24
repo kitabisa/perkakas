@@ -3,6 +3,7 @@ module github.com/kitabisa/perkakas/v2
 go 1.13
 
 require (
+	firebase.google.com/go/v4 v4.0.0
 	github.com/antihax/optional v1.0.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
 	github.com/ashwanthkumar/slack-go-webhook v0.0.0-20200209025033-430dd4e66960
@@ -26,6 +27,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.2.2
 	github.com/urfave/negroni v1.0.0
+	google.golang.org/api v0.17.0
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/h2non/gock.v1 v1.0.15
 	moul.io/http2curl v1.0.0 // indirect
