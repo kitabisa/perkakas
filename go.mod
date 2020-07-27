@@ -22,6 +22,7 @@ require (
 	github.com/olivere/elastic/v7 v7.0.9
 	github.com/parnurzeal/gorequest v0.2.16 // indirect
 	github.com/prometheus/common v0.2.0
+	github.com/rs/zerolog v1.19.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.2.2
