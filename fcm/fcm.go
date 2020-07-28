@@ -42,11 +42,16 @@ func firebaseMessagingClient(app *firebase.App) (messagingClient *messaging.Clie
 	return app.Messaging(ctx)
 }
 
-func (f *Fcm) Send(ctx context.Context, topic string, message map[string]string) (messageID string, err error) {
+func (f *Fcm) send(ctx context.Context, topic, title, body, imageURL string, message map[string]string) (messageID string, err error) {
 	// See documentation on defining a message payload.
 	msg := &messaging.Message{
-			Data: message,
-			Topic: topic,
+		Notification: &messaging.Notification {
+			Title: title,
+			Body: body,
+			ImageURL: imageURL,
+		},
+		Data: message,
+		Topic: topic,
 	}
 
 	messageID, err = f.messagingClient.Send(ctx, msg)
@@ -55,4 +60,12 @@ func (f *Fcm) Send(ctx context.Context, topic string, message map[string]string)
 	}
 
 	return
+}
+
+func (f *Fcm) SendWithoutNotification(ctx context.Context, topic string, message map[string]string) (messageID string, err error) {
+	return f.send(ctx, topic, "", "", "", message)
+}
+
+func (f *Fcm) Send(ctx context.Context, topic, title, body, imageURL string, message map[string]string) (messageID string, err error) {
+	return f.send(ctx, topic, title, body, imageURL, message)
 }
