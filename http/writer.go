@@ -20,6 +20,7 @@ func NewContextHandler(meta structs.Meta) HttpHandlerContext {
 		structs.ErrInvalidHeader:          structs.ErrInvalidHeader,
 		structs.ErrUnauthorized:           structs.ErrUnauthorized,
 		structs.ErrInvalidHeaderSignature: structs.ErrInvalidHeaderSignature,
+		structs.ErrInvalidHeaderTime:      structs.ErrInvalidHeaderTime,
 	}
 
 	return HttpHandlerContext{

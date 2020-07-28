@@ -3,6 +3,8 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/asaskevich/govalidator"
 	phttp "github.com/kitabisa/perkakas/v2/http"
@@ -12,7 +14,7 @@ import (
 
 type Header struct {
 	XKtbsRequestID     string `valid:"uuidv4,required"`
-	XKtbsApiVersion    string `valid:"semver,required"`
+	XKtbsAPIVersion    string `valid:"semver,required"`
 	XKtbsClientVersion string `valid:"semver,required"`
 	XKtbsPlatformName  string `valid:"required"`
 	XKtbsClientName    string `valid:"required"`
@@ -32,7 +34,7 @@ func NewHeaderCheck(hctx phttp.HttpHandlerContext, secretKey string) func(next h
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			header := Header{
 				XKtbsRequestID:     r.Header.Get("X-Ktbs-Request-ID"),
-				XKtbsApiVersion:    r.Header.Get("X-Ktbs-Api-Version"),
+				XKtbsAPIVersion:    r.Header.Get("X-Ktbs-Api-Version"),
 				XKtbsClientVersion: r.Header.Get("X-Ktbs-Client-Version"),
 				XKtbsPlatformName:  r.Header.Get("X-Ktbs-Platform-Name"),
 				XKtbsClientName:    r.Header.Get("X-Ktbs-Client-Name"),
@@ -44,6 +46,18 @@ func NewHeaderCheck(hctx phttp.HttpHandlerContext, secretKey string) func(next h
 			_, err := govalidator.ValidateStruct(header)
 			if err != nil {
 				writer.WriteError(w, structs.ErrInvalidHeader)
+				return
+			}
+
+			theTime, err := strconv.ParseInt(header.XKtbsTime, 10, 64)
+			if err != nil {
+				writer.WriteError(w, structs.ErrInvalidHeader)
+				return
+			}
+
+			// delay request should not be more than 1 min
+			if theTime+60 < time.Now().UTC().Unix() {
+				writer.WriteError(w, structs.ErrInvalidHeaderTime)
 				return
 			}
 

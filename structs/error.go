@@ -47,3 +47,14 @@ var ErrInvalidHeaderSignature *ErrorResponse = &ErrorResponse{
 	},
 	HttpStatus: http.StatusBadRequest,
 }
+
+var ErrInvalidHeaderTime *ErrorResponse = &ErrorResponse{
+	Response: Response{
+		ResponseCode: "00005",
+		ResponseDesc: ResponseDesc{
+			ID: "Request sudah kedaluwarsa",
+			EN: "Request already expired",
+		},
+	},
+	HttpStatus: http.StatusBadRequest,
+}
