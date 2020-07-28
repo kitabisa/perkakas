@@ -11,8 +11,13 @@ import (
 // GetSublogger get zerolog sublogger
 // WIP: middleware for set X-Ktbs-Request-ID to context
 func GetSublogger(ctx context.Context, ctxName string) zerolog.Logger {
+	reqID := ""
+	if ctx.Value(internal.CtxXKtbsRequestID) != nil {
+		reqID = ctx.Value(internal.CtxXKtbsRequestID).(string)
+	}
+
 	return log.With().
-		Str(internal.CtxXKtbsRequestID.String(), ctx.Value(internal.CtxXKtbsRequestID).(string)).
+		Str(internal.CtxXKtbsRequestID.String(), reqID).
 		Str("label", ctxName).
 		Logger()
 }

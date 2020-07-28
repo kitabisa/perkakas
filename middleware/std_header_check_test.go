@@ -6,7 +6,9 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
+	"time"
 
 	phttp "github.com/kitabisa/perkakas/v2/http"
 	"github.com/kitabisa/perkakas/v2/signature"
@@ -29,7 +31,9 @@ func TestStdHeaderValidation(t *testing.T) {
 		t.FailNow()
 	}
 
-	sign := signature.GenerateHmac(fmt.Sprintf("%s%s", "kitabisa-apps", "1573197959"), "key")
+	theTime := time.Now().UTC().Unix()
+
+	sign := signature.GenerateHmac(fmt.Sprintf("%s%d", "kitabisa-apps", theTime), "key")
 
 	req.Header.Add("X-Ktbs-Request-ID", uuid.NewV4().String())
 	req.Header.Add("X-Ktbs-Api-Version", "1.0.1")
@@ -37,7 +41,7 @@ func TestStdHeaderValidation(t *testing.T) {
 	req.Header.Add("X-Ktbs-Platform-Name", "android")
 	req.Header.Add("X-Ktbs-Client-Name", "kitabisa-apps")
 	req.Header.Add("X-Ktbs-Signature", sign)
-	req.Header.Add("X-Ktbs-Time", "1573197959")
+	req.Header.Add("X-Ktbs-Time", strconv.FormatInt(theTime, 10))
 	req.Header.Add("Authorization", "Bearer")
 
 	client := http.Client{}
@@ -52,5 +56,7 @@ func TestStdHeaderValidation(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%s", greeting)
+	if res.StatusCode != http.StatusOK {
+		t.Fatal(res.StatusCode, string(greeting))
+	}
 }
