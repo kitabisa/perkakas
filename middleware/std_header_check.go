@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	phttp "github.com/kitabisa/perkakas/v2/http"
+	"github.com/kitabisa/perkakas/v2/internal"
 	"github.com/kitabisa/perkakas/v2/signature"
 	"github.com/kitabisa/perkakas/v2/structs"
 )
@@ -71,4 +73,14 @@ func NewHeaderCheck(hctx phttp.HttpHandlerContext, secretKey string) func(next h
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+// RequestIDToContextMiddleware set X-Ktbs-Request-ID header value to context
+func RequestIDToContextMiddleware(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		r = r.WithContext(context.WithValue(ctx, internal.CtxXKtbsRequestID, r.Header.Get(internal.CtxXKtbsRequestID.String())))
+		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
 }
