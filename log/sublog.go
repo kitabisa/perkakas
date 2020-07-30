@@ -3,7 +3,7 @@ package log
 import (
 	"context"
 
-	"github.com/kitabisa/perkakas/v2/internal"
+	"github.com/kitabisa/perkakas/v2/ctxkeys"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -12,12 +12,12 @@ import (
 // WIP: middleware for set X-Ktbs-Request-ID to context
 func GetSublogger(ctx context.Context, ctxName string) zerolog.Logger {
 	reqID := ""
-	if ctx.Value(internal.CtxXKtbsRequestID) != nil {
-		reqID = ctx.Value(internal.CtxXKtbsRequestID).(string)
+	if ctx.Value(ctxkeys.CtxXKtbsRequestID) != nil {
+		reqID = ctx.Value(ctxkeys.CtxXKtbsRequestID).(string)
 	}
 
 	return log.With().
-		Str(internal.CtxXKtbsRequestID.String(), reqID).
+		Str(ctxkeys.CtxXKtbsRequestID.String(), reqID).
 		Str("label", ctxName).
 		Logger()
 }
