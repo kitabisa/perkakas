@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/kitabisa/perkakas/v2/ctxkeys"
 	phttp "github.com/kitabisa/perkakas/v2/http"
-	"github.com/kitabisa/perkakas/v2/internal"
 	"github.com/kitabisa/perkakas/v2/signature"
 	"github.com/kitabisa/perkakas/v2/structs"
 )
@@ -79,7 +79,7 @@ func NewHeaderCheck(hctx phttp.HttpHandlerContext, secretKey string) func(next h
 func RequestIDToContextMiddleware(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		r = r.WithContext(context.WithValue(ctx, internal.CtxXKtbsRequestID, r.Header.Get(internal.CtxXKtbsRequestID.String())))
+		r = r.WithContext(context.WithValue(ctx, ctxkeys.CtxXKtbsRequestID, r.Header.Get(ctxkeys.CtxXKtbsRequestID.String())))
 		next.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(fn)
