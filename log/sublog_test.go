@@ -5,11 +5,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/kitabisa/perkakas/v2/internal"
+	"github.com/kitabisa/perkakas/v2/ctxkeys"
 )
 
 func TestSublogger(t *testing.T) {
-	ctx := context.WithValue(context.Background(), internal.CtxXKtbsRequestID, "111111")
+	ctx := context.WithValue(context.Background(), ctxkeys.CtxXKtbsRequestID, "111111")
 
 	subLog := GetSublogger(ctx, "test-context-name-1")
 	subLog.Err(errors.New("test-error")).Msg("test-message")
