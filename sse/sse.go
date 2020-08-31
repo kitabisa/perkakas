@@ -3,6 +3,7 @@ package sse
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -63,6 +64,10 @@ func (s *Client) SendEvent(ctx context.Context, eventPath string, payload interf
 }
 
 func (s *Client) PublishEvent(ctx context.Context, topic string, key string, payload interface{}) (err error) {
+	if s.Producer == nil {
+		return errors.New("[sse-client]: Want to publish message but producer is uninitialized")
+	}
+
 	val, err := json.Marshal(payload)
 	if err != nil {
 		return err
