@@ -26,12 +26,13 @@ type Client struct {
 }
 
 // NewSseClient initializes new instance of SSE client
-func NewSseClient(host, username, password string) ISseClient {
+func NewSseClient(host, username, password string, producer sarama.AsyncProducer) ISseClient {
 	return &Client{
 		Host:       host,
 		Username:   username,
 		Password:   password,
 		HTTPClient: httpclient.NewHttpClient(nil),
+		Producer: producer,
 	}
 }
 
