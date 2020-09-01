@@ -15,6 +15,7 @@ import (
 // ISseClient defines interface of SSE client
 type ISseClient interface {
 	SendEvent(ctx context.Context, eventPath string, payload interface{}) (err error)
+	PublishEvent(ctx context.Context, topic string, key string, payload interface{}) (err error)
 }
 
 // Client defines object for SSE instance client
