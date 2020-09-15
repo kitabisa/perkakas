@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strconv"
-	"time"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/kitabisa/perkakas/v2/ctxkeys"
@@ -48,18 +46,6 @@ func NewHeaderCheck(hctx phttp.HttpHandlerContext, secretKey string) func(next h
 			_, err := govalidator.ValidateStruct(header)
 			if err != nil {
 				writer.WriteError(w, structs.ErrInvalidHeader)
-				return
-			}
-
-			theTime, err := strconv.ParseInt(header.XKtbsTime, 10, 64)
-			if err != nil {
-				writer.WriteError(w, structs.ErrInvalidHeader)
-				return
-			}
-
-			// delay request should not be more than 1 min
-			if theTime+60 < time.Now().UTC().Unix() {
-				writer.WriteError(w, structs.ErrInvalidHeaderTime)
 				return
 			}
 
