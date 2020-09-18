@@ -11,7 +11,7 @@ import (
 
 var customChiLogger = customRequestLogger(&cmiddleware.DefaultLogFormatter{Logger: log.New(os.Stdout, "", log.LstdFlags), NoColor: false})
 
-// CustomChiLogger create custom chi logger-like that print request log only for 4xx and 5xx error
+// CustomChiLogger create custom chi logger-like that print request log only for 4xx and 5xx HTTP status code
 func CustomChiLogger(next http.Handler) http.Handler {
 	return customChiLogger(next)
 }
