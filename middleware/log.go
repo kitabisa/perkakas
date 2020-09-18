@@ -41,6 +41,7 @@ func RequestLogger(next http.Handler) http.Handler {
 		subLog := zlog.With().
 			Str(log.FieldEndpoint, r.URL.String()).
 			Str(log.FieldMethod, r.Method).
+			Int(log.FieldHTTPStatus, ww.Status()).
 			Logger()
 
 		h := r.Header.Clone()
