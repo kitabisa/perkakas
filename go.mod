@@ -11,6 +11,7 @@ require (
 	github.com/checkr/goflagr v0.0.0-20191204001954-97a36973fd24
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/elazarl/goproxy v0.0.0-20200809112317-0581fc3aee2d // indirect
+	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/gojektech/heimdall v5.0.2+incompatible
 	github.com/gojektech/valkyrie v0.0.0-20190210220504-8f62c1e7ba45 // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible
