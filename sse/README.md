@@ -1,24 +1,31 @@
 # Perkakas SSE Library
 This library helps you to send message to SSE server
 
-# How To Send Message
+## How To Send Message
 ```go
-type Donation struct {
-    DonationID int64 `json:"donation_id"`
-    UserID     int64 `json:"user_id"`
-    Amount     int64 `json:"amount"` 
-}
+package main
 
-donationData := Donation{
-    DonationID: 334534,
-    UserID:     2463,
-    Amount:     50000,
-}
+import (
+    "context"
+    "fmt"
+    "github.com/kitabisa/perkakas/v2/sse"
+    "github.com/kitabisa/perkakas/v2/queue/kafka"
+)
 
-sseClient := NewSseClient("your-sse-host", "username", "password")
+func main() {
+    data := map[string]interface{} {
+        "donation_id": 5234577,
+        "user_id": 267182,
+        "amount": 50000,
+    }
 
-err := sseClient.SendEvent(context.Background(), "/notification/donation-created", donationData)
-if err != nil {
-    panic(err)
+    // By default, SSE client will set the kafka version to 2.5.0. You can change the kafka version using
+    // `SetKafkaVersion()` and see the kafka version currently applied with `GetKafkaVersion()`
+    client := sse.NewSseClient("localhost:9092", kafka.WithClientID("katresnan"), kafka.WithRetryMax(5))
+
+    err := client.PublishEvent(context.Background(), "topic", "key", data)
+    if err != nil {
+        fmt.Println(err)
+    }
 }
 ```

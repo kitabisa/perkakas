@@ -3,71 +3,63 @@ package sse
 import (
 	"context"
 	"encoding/json"
-	"errors"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-
-	"github.com/kitabisa/perkakas/v2/httpclient"
 	"github.com/Shopify/sarama"
+	"github.com/kitabisa/perkakas/v2/queue/kafka"
 )
 
 // ISseClient defines interface of SSE client
 type ISseClient interface {
-	SendEvent(ctx context.Context, eventPath string, payload interface{}) (err error)
+	// PublishEvent has functionality to publish event to kafka brokers
 	PublishEvent(ctx context.Context, topic string, key string, payload interface{}) (err error)
+
+	// SetKafkaVersion sets the kafka version
+	SetKafkaVersion(ctx context.Context, version string)
+
+	// GetKafkaVersion gets the kafka version
+	GetKafkaVersion(ctx context.Context) string
 }
 
 // Client defines object for SSE instance client
 type Client struct {
+	// Host of the kafka brokers. Currently designed for one broker.
 	Host       string
-	Username   string
-	Password   string
-	HTTPClient *httpclient.HttpClient
-	Producer sarama.AsyncProducer
+
+	// KafkaVersion denotes the expecting kafka version used by this client.
+	KafkaVersion    string
+
+	// opts are array of producer config options use to build the kafka producer used by this client.
+	opts []kafka.ProducerConfigOption
 }
 
 // NewSseClient initializes new instance of SSE client
-func NewSseClient(host, username, password string, producer sarama.AsyncProducer) ISseClient {
+func NewSseClient(host string, opts ...kafka.ProducerConfigOption) ISseClient {
 	return &Client{
 		Host:       host,
-		Username:   username,
-		Password:   password,
-		HTTPClient: httpclient.NewHttpClient(nil),
-		Producer: producer,
+		KafkaVersion: "2.5.0",
+		opts: opts,
 	}
 }
 
-// SendEvent will send event request to kitabisa SSE server
-func (s *Client) SendEvent(ctx context.Context, eventPath string, payload interface{}) (err error) {
-	url := fmt.Sprintf("%s%s", s.Host, eventPath)
-	req, err := http.NewRequest(http.MethodPost, url, nil)
-	if err != nil {
-		return err
-	}
-	req.SetBasicAuth(s.Username, s.Password)
-
-	resp, err := s.HTTPClient.Client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("[sse-client] %d Reader error when reading response: %s", resp.StatusCode, err.Error())
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("[sse-client] %d:%s", resp.StatusCode, string(body))
-	}
-	return nil
+// SetKafkaVersion sets the kafka version
+func (s *Client) SetKafkaVersion(ctx context.Context, version string) {
+	s.KafkaVersion = version
 }
 
+// GetKafkaVersion gets the kafka version
+func (s *Client) GetKafkaVersion(ctx context.Context) string {
+	return s.KafkaVersion
+}
+
+// PublishEvent has functionality to publish event to kafka brokers.
+// For payload, you can use marshalable types, such as struct or map[string]interface{}. PublishEvent will publish
+// message to kafka broker in asynchronous fashion.
 func (s *Client) PublishEvent(ctx context.Context, topic string, key string, payload interface{}) (err error) {
-	if s.Producer == nil {
-		return errors.New("[sse-client]: Want to publish message but producer is uninitialized")
+	producer, err := kafka.NewKafkaAsyncProducer([]string{s.Host}, s.KafkaVersion, s.opts...)
+	if err != nil {
+		return
 	}
+
+	defer producer.Close()
 
 	val, err := json.Marshal(payload)
 	if err != nil {
@@ -81,8 +73,8 @@ func (s *Client) PublishEvent(ctx context.Context, topic string, key string, pay
 	}
 
 	select {
-	case s.Producer.Input() <- msg:
-	case _ = <-s.Producer.Errors():
+	case producer.Input() <- msg:
+	case <- producer.Errors():
 	}
 
 	return nil
