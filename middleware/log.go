@@ -17,6 +17,7 @@ type HttpRequestLoggerMiddleware struct {
 	logger *log.Logger
 }
 
+// TODO: to be deprecated
 func NewHttpRequestLogger(logger *log.Logger) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -55,17 +56,18 @@ func RequestLogger(next http.Handler) http.Handler {
 
 		if !strings.Contains(r.Header.Get("Content-type"), "multipart/form-data") {
 			body := httputil.ReadRequestBody(r)
-
-			bodyClean := new(bytes.Buffer)
-			if err := json.Compact(bodyClean, []byte(body)); err != nil {
-				subLog.Err(err).Send()
-			}
-
-			body = bodyClean.String()
-			httputil.ExcludeSensitiveRequestBody(&body)
-
 			if body != "" {
-				subLog = subLog.With().Str(log.FieldRequestBody, body).Logger()
+				bodyClean := new(bytes.Buffer)
+				if err := json.Compact(bodyClean, []byte(body)); err != nil {
+					subLog.Warn().Err(err).Send()
+				}
+
+				body = bodyClean.String()
+				httputil.ExcludeSensitiveRequestBody(&body)
+
+				if body != "" {
+					subLog = subLog.With().Str(log.FieldRequestBody, body).Logger()
+				}
 			}
 		}
 
