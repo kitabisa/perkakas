@@ -33,6 +33,7 @@ func main() {
     // use the middleware
     router.Use(midd)
     router.Use(logMiddleware)
+    router.Use(RequestLogger) // will print request log only for 4xx and 5xx HTTP status code
     
 	router.Get("/", helloHandler.ServeHTTP)
 

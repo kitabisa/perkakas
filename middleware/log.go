@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	cmiddleware "github.com/go-chi/chi/middleware"
 	"github.com/kitabisa/perkakas/v2/httputil"
 	"github.com/kitabisa/perkakas/v2/log"
 	zlog "github.com/rs/zerolog/log"
@@ -29,9 +30,18 @@ func NewHttpRequestLogger(logger *log.Logger) func(next http.Handler) http.Handl
 // RequestLogger middleware for request logging using zerolog
 func RequestLogger(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
+		ww := cmiddleware.NewWrapResponseWriter(w, r.ProtoMajor)
+
+		next.ServeHTTP(ww, r)
+
+		if ww.Status() < http.StatusBadRequest {
+			return
+		}
+
 		subLog := zlog.With().
 			Str(log.FieldEndpoint, r.URL.String()).
 			Str(log.FieldMethod, r.Method).
+			Int(log.FieldHTTPStatus, ww.Status()).
 			Logger()
 
 		h := r.Header.Clone()
@@ -60,7 +70,6 @@ func RequestLogger(next http.Handler) http.Handler {
 		}
 
 		subLog.Info().Send()
-		next.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(fn)
 }
