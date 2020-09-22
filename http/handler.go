@@ -22,7 +22,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data, pageToken, err := h.H(w, r)
 
 	if err != nil {
-		log.Err(err).Msgf("%+v", data)
+		log.Err(err).Msgf("Response: %+v", data)
 		h.WriteError(w, err)
 		return
 	}
