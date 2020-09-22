@@ -8,16 +8,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// RequestIDToContextMiddleware set X-Ktbs-Request-ID header value to context
+// RequestIDToContextAndLogMiddleware set X-Ktbs-Request-ID header value and logger to context
 func RequestIDToContextAndLogMiddleware(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		reqID := r.Header.Get(ctxkeys.CtxXKtbsRequestID.String())
 		r = r.WithContext(context.WithValue(ctx, ctxkeys.CtxXKtbsRequestID, reqID))
 
-		log.Logger = log.With().
+		logger := log.With().
 			Str(ctxkeys.CtxXKtbsRequestID.String(), reqID).
 			Logger()
+		r = r.WithContext(context.WithValue(ctx, ctxkeys.CtxLogger, logger))
 
 		next.ServeHTTP(w, r)
 	}
