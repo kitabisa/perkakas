@@ -69,7 +69,6 @@ func TestRaceRequestIDToContextAndLogMiddleware(t *testing.T) {
 
 		go func(*httptest.Server) {
 			defer wg.Done()
-			// defer pipeWriter.Close()
 			reqID := callHTTP(ts)
 			reqIDs = append(reqIDs, reqID)
 			<-sem
@@ -83,10 +82,8 @@ func TestRaceRequestIDToContextAndLogMiddleware(t *testing.T) {
 		t.FailNow()
 	}
 
-	// the test is still fail, always lack of 1 line from total looping on the our buffer.
 	for _, reqID := range reqIDs {
 		assert.Contains(t, string(out), reqID)
-		// assert.Contains(t, "123", reqID)
 	}
 }
 
