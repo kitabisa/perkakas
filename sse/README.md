@@ -21,7 +21,8 @@ func main() {
 
     // By default, SSE client will set the kafka version to 2.5.0. You can change the kafka version using
     // `SetKafkaVersion()` and see the kafka version currently applied with `GetKafkaVersion()`
-    client := sse.NewSseClient("localhost:9092", kafka.WithClientID("katresnan"), kafka.WithRetryMax(5))
+    kafkaHost := []string{"localhost:9092"}
+    client := sse.NewSseClient(kafkaHost, kafka.WithClientID("katresnan"), kafka.WithRetryMax(5))
 
     err := client.PublishEvent(context.Background(), "topic", "key", data)
     if err != nil {

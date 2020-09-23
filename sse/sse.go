@@ -3,6 +3,7 @@ package sse
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/Shopify/sarama"
 	"github.com/kitabisa/perkakas/v2/queue/kafka"
 )
@@ -21,22 +22,22 @@ type ISseClient interface {
 
 // Client defines object for SSE instance client
 type Client struct {
-	// Host of the kafka brokers. Currently designed for one broker.
-	Host       string
+	// Host of the kafka brokers.
+	Host []string
 
 	// KafkaVersion denotes the expecting kafka version used by this client.
-	KafkaVersion    string
+	KafkaVersion string
 
 	// opts are array of producer config options use to build the kafka producer used by this client.
 	opts []kafka.ProducerConfigOption
 }
 
 // NewSseClient initializes new instance of SSE client
-func NewSseClient(host string, opts ...kafka.ProducerConfigOption) ISseClient {
+func NewSseClient(host []string, opts ...kafka.ProducerConfigOption) ISseClient {
 	return &Client{
-		Host:       host,
+		Host:         host,
 		KafkaVersion: "2.5.0",
-		opts: opts,
+		opts:         opts,
 	}
 }
 
@@ -54,7 +55,7 @@ func (s *Client) GetKafkaVersion(ctx context.Context) string {
 // For payload, you can use marshalable types, such as struct or map[string]interface{}. PublishEvent will publish
 // message to kafka broker in asynchronous fashion.
 func (s *Client) PublishEvent(ctx context.Context, topic string, key string, payload interface{}) (err error) {
-	producer, err := kafka.NewKafkaAsyncProducer([]string{s.Host}, s.KafkaVersion, s.opts...)
+	producer, err := kafka.NewKafkaAsyncProducer(s.Host, s.KafkaVersion, s.opts...)
 	if err != nil {
 		return
 	}
@@ -74,7 +75,7 @@ func (s *Client) PublishEvent(ctx context.Context, topic string, key string, pay
 
 	select {
 	case producer.Input() <- msg:
-	case <- producer.Errors():
+	case <-producer.Errors():
 	}
 
 	return nil
