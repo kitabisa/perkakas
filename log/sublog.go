@@ -9,7 +9,7 @@ import (
 )
 
 // GetSublogger get zerolog sublogger
-// WIP: middleware for set X-Ktbs-Request-ID to context
+// TODO: TO BE DEPRECATED after v2.14.6
 func GetSublogger(ctx context.Context, ctxName string) zerolog.Logger {
 	reqID := ""
 	if ctx.Value(ctxkeys.CtxXKtbsRequestID) != nil {

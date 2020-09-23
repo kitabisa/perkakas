@@ -8,6 +8,7 @@ import (
 	"github.com/kitabisa/perkakas/v2/ctxkeys"
 )
 
+// TODO: TO BE DEPRECATED after v2.14.6
 func TestSublogger(t *testing.T) {
 	ctx := context.WithValue(context.Background(), ctxkeys.CtxXKtbsRequestID, "111111")
 
