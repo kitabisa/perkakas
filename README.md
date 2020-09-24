@@ -22,8 +22,8 @@ See `README.md` in each folders to see how to use these modules.
 
 ### Logger
 
-nb: logger from is deprecated.
-Perkakas logger is based on Zerolog since version v1.15.0
+nb: logger from v2.14.6 is deprecated.
+Perkakas logger is based on Zerolog since version v2.15.0
 If you want to use logging from perkakas, follow this:
 
 1.  use middleware: `RequestIDToContextAndLogMiddleware`
