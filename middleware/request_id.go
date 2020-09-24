@@ -11,14 +11,13 @@ import (
 // RequestIDToContextAndLogMiddleware set X-Ktbs-Request-ID header value and logger to context
 func RequestIDToContextAndLogMiddleware(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
 		reqID := r.Header.Get(ctxkeys.CtxXKtbsRequestID.String())
-		r = r.WithContext(context.WithValue(ctx, ctxkeys.CtxXKtbsRequestID, reqID))
+		r = r.WithContext(context.WithValue(r.Context(), ctxkeys.CtxXKtbsRequestID, reqID))
 
 		logger := log.With().
 			Str(ctxkeys.CtxXKtbsRequestID.String(), reqID).
 			Logger()
-		r = r.WithContext(context.WithValue(ctx, ctxkeys.CtxLogger, logger))
+		r = r.WithContext(context.WithValue(r.Context(), ctxkeys.CtxLogger, logger))
 
 		next.ServeHTTP(w, r)
 	}
