@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	"github.com/rs/zerolog/log"
+	zlog "github.com/kitabisa/perkakas/v2/log"
 )
 
 type HttpHandler struct {
@@ -22,7 +22,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data, pageToken, err := h.H(w, r)
 
 	if err != nil {
-		log.Err(err).Msgf("Response: %+v", data)
+		zlog.Zlogger(r.Context()).Err(err).Msgf("Response: %+v", data)
 		h.WriteError(w, err)
 		return
 	}
