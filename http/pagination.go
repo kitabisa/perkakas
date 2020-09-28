@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-const PaginationLimit  = 10
-
 func CreatePageToken(arrayData interface{}, dataLimit int, fieldNameId string, fieldNameDate string) (nextToken string) {
 	voData := reflect.ValueOf(arrayData)
 	if voData.Kind() != reflect.Slice {
