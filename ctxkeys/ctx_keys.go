@@ -7,6 +7,9 @@ var (
 	// CtxXKtbsRequestID context key for X-Ktbs-Request-ID
 	CtxXKtbsRequestID contextKey = "X-Ktbs-Request-ID"
 
+	// CtxKtbsDonationIdentifier context key for X-Ktbs-Donation-Identifier
+	CtxKtbsDonationIdentifier contextKey = "X-Ktbs-Donation-Identifier"
+
 	// CtxLogger context key for logger
 	CtxLogger logger = "Ktbs-Logger"
 )
