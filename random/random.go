@@ -15,13 +15,24 @@ func UUID() (id string, err error) {
 	return newId.String(), nil
 }
 
+type IRandomStringGenerator interface {
+	String(length int) string
+}
+
+type RandomStringGenerator struct{}
+
+func NewRandomStringGenerator() *RandomStringGenerator {
+	return &RandomStringGenerator{}
+}
+
 // String random string with n length
-func String(length int) string {
+func (s *RandomStringGenerator) String(length int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 	b := make([]rune, length)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
+
 	return string(b)
 }
