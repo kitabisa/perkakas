@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/DataDog/datadog-go/statsd"
 	zlog "github.com/kitabisa/perkakas/v2/log"
@@ -38,9 +39,18 @@ func OptionMetric(m *statsd.Client) HanlderOption {
 }
 
 func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// add time.now
+	startHandleRequest := time.Now()
 	data, pageToken, err := h.H(w, r)
-	// add time.now, calculate to get response time, kirim ke metric
+	finishHandleRequest := time.Now()
+
+	diff := finishHandleRequest.Sub(startHandleRequest)
+
+	responseTimeTag := []string{fmt.Sprintf("request time from start to finish  (before rounded): %0.3fs", diff.Seconds())}
+
+	if h.Metric != nil {
+		h.Metric.Incr("RESPONSE_TIME", responseTimeTag, 1)
+	}
+
 	if err != nil {
 		var statusCode int
 		if erResp, ok := h.C.E[err]; ok {
