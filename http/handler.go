@@ -9,7 +9,7 @@ import (
 	zlog "github.com/kitabisa/perkakas/v2/log"
 )
 
-type HanlderOption func(*HttpHandler)
+type HandlerOption func(*HttpHandler)
 
 type HttpHandler struct {
 	// H is handler, with return interface{} as data object, *string for token next page, error for error type
@@ -18,7 +18,7 @@ type HttpHandler struct {
 	Metric *statsd.Client
 }
 
-func NewHttpHandler(c HttpHandlerContext, opts ...HanlderOption) func(handler func(w http.ResponseWriter, r *http.Request) (interface{}, *string, error)) HttpHandler {
+func NewHttpHandler(c HttpHandlerContext, opts ...HandlerOption) func(handler func(w http.ResponseWriter, r *http.Request) (interface{}, *string, error)) HttpHandler {
 	return func(handler func(w http.ResponseWriter, r *http.Request) (interface{}, *string, error)) HttpHandler {
 		h := HttpHandler{H: handler, CustomWriter: CustomWriter{C: c}}
 
@@ -31,8 +31,8 @@ func NewHttpHandler(c HttpHandlerContext, opts ...HanlderOption) func(handler fu
 	}
 }
 
-// OptionMetric wire statsd client to perkakas handler
-func OptionMetric(m *statsd.Client) HanlderOption {
+// WithMetric wire statsd client to perkakas handler
+func WithMetric(m *statsd.Client) HandlerOption {
 	return func(h *HttpHandler) {
 		h.Metric = m
 	}
