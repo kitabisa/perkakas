@@ -45,20 +45,34 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	diff := finishHandleRequest.Sub(startHandleRequest)
 
-	responseTimeTag := []string{fmt.Sprintf("request time from start to finish  (before rounded): %0.3fs", diff.Seconds())}
+	responseTimeTag := []string{fmt.Sprintf("response_time(s):%0.1f", diff.Seconds())}
 
 	if h.Metric != nil {
 		h.Metric.Incr("RESPONSE_TIME", responseTimeTag, 1)
 	}
 
 	if err != nil {
-		var statusCode int
-		if erResp, ok := h.C.E[err]; ok {
-			statusCode = erResp.HttpStatus
-		}
-
 		if h.Metric != nil {
-			h.Metric.Incr("ERROR", []string{fmt.Sprintf("http_status:%d", statusCode)}, 1)
+			var statusCode int
+			var responseCode string
+			var tag []string
+			if erResp, ok := h.C.E[err]; ok {
+				statusCode = erResp.HttpStatus
+				responseCode = erResp.Response.ResponseCode
+			}
+
+			tag = append(tag, fmt.Sprintf("http_status:%d", statusCode), fmt.Sprintf("response_code:%s", responseCode), fmt.Sprintf("endpoint:%s", r.URL.Path))
+
+			fmt.Println(tag)
+
+			var table string
+			if statusCode >= 400 && statusCode < 500 {
+				table = "WARN"
+			} else {
+				table = "ERROR"
+			}
+
+			h.Metric.Incr(table, tag, 1)
 		}
 
 		zlog.Zlogger(r.Context()).Err(err).Msgf("Response: %+v", data)
