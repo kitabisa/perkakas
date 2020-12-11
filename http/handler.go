@@ -63,8 +63,6 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 			tag = append(tag, fmt.Sprintf("http_status:%d", statusCode), fmt.Sprintf("response_code:%s", responseCode), fmt.Sprintf("endpoint:%s", r.URL.Path))
 
-			fmt.Println(tag)
-
 			var table string
 			if statusCode >= 400 && statusCode < 500 {
 				table = "WARN"
