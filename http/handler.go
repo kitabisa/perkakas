@@ -43,11 +43,9 @@ func WithMetric(m *statsd.Client, svcName string) HandlerOption {
 func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	startHandleRequest := time.Now()
 	data, pageToken, err := h.H(w, r)
-	finishHandleRequest := time.Now()
+	diff := time.Since(startHandleRequest)
 
 	var tag []string
-
-	diff := finishHandleRequest.Sub(startHandleRequest)
 
 	if err != nil {
 		if h.Metric != nil {
@@ -82,9 +80,9 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.Metric.Incr("SUCCESS", tag, 1)
 
 		// response time
-		responseTimeTag := []string{fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", r.URL.Path), fmt.Sprintf("response_time(s):%0.1f", diff.Seconds()), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID"))}
+		responseTimeTag := []string{fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", r.URL.Path), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID"))}
 
-		h.Metric.Incr("RESPONSE_TIME", responseTimeTag, 1)
+		h.Metric.Incr("RESPONSE_TIME", responseTimeTag, float64(diff.Milliseconds()))
 	}
 
 	h.Write(w, data, pageToken)
