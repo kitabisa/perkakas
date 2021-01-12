@@ -3,6 +3,9 @@ package http
 import (
 	"fmt"
 	"net/http"
+	"net/url"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/DataDog/datadog-go/statsd"
@@ -46,6 +49,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	diff := time.Since(startHandleRequest)
 
 	var tag []string
+	URL := PathPattern(r.URL.Path)
 
 	if err != nil {
 		if h.Metric != nil {
@@ -64,7 +68,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				status = "SERVER_ERROR"
 			}
 
-			tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", r.URL.Path), fmt.Sprintf("http_status:%d", statusCode), fmt.Sprintf("response_code:%s", responseCode), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("status:%s", status))
+			tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), fmt.Sprintf("http_status:%d", statusCode), fmt.Sprintf("response_code:%s", responseCode), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("status:%s", status))
 
 			h.Metric.Incr(table, tag, 1)
 		}
@@ -75,7 +79,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if h.Metric != nil {
-		tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", r.URL.Path), fmt.Sprintf("http_status:%d", 200), fmt.Sprintf("response_code:%s", "000000")) // tambahin req id
+		tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", r.URL.Path), fmt.Sprintf("http_status:%d", 200), fmt.Sprintf("response_code:%s", "000000"), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")))
 
 		h.Metric.Incr("SUCCESS", tag, 1)
 
@@ -86,4 +90,22 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.Write(w, data, pageToken)
+}
+
+const paramSign = "PARAM"
+
+// PathPattern modify params on url
+func PathPattern(input string) string {
+	u, _ := url.Parse(input)
+	path := u.Path
+	for _, pic := range strings.Split(path, "/") {
+		itParam, _ := regexp.Match("[0-9][a-z+A-Z]*[0-9]", []byte(pic))
+		if itParam {
+			path = strings.Replace(path, pic, paramSign, 1)
+		} else if len(pic) > 12 {
+			path = strings.Replace(path, pic, paramSign, 1)
+		}
+	}
+
+	return path
 }
