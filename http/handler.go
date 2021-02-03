@@ -36,8 +36,14 @@ func NewHttpHandler(c HttpHandlerContext, opts ...HandlerOption) func(handler fu
 }
 
 // WithMetric wire statsd client to perkakas handler
-func WithMetric(m *statsd.Client, svcName string) HandlerOption {
+func WithMetric(telegrafHost string, telegrafPort int, svcName string) HandlerOption {
 	return func(h *HttpHandler) {
+		host := fmt.Sprintf("%s:%d", telegrafHost, telegrafPort)
+		m, err := statsd.New(host)
+		if err != nil {
+			panic(err)
+		}
+
 		h.Metric = m
 		h.ServiceName = svcName
 	}
