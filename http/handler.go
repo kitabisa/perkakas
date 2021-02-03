@@ -86,7 +86,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// response time
 		responseTimeTag := []string{fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID"))}
 
-		h.Metric.Incr("RESPONSE_TIME", responseTimeTag, float64(diff.Milliseconds()))
+		h.Metric.Count("RESPONSE_TIME", diff.Milliseconds(), responseTimeTag, 1)
 	}
 
 	h.Write(w, data, pageToken)
