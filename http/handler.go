@@ -78,7 +78,15 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				status = "SERVER_ERROR"
 			}
 
-			tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), fmt.Sprintf("http_status:%d", statusCode), fmt.Sprintf("response_code:%s", responseCode), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("status:%s", status), fmt.Sprintf("method:%s", r.Method))
+			tag = append(tag,
+				fmt.Sprintf("service_name:%s", h.ServiceName),
+				fmt.Sprintf("method:%s", r.Method),
+				fmt.Sprintf("endpoint:%s", URL),
+				fmt.Sprintf("http_status:%d", statusCode),
+				fmt.Sprintf("response_code:%s", responseCode),
+				fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")),
+				fmt.Sprintf("status:%s", status),
+			)
 
 			h.Metric.Incr(table, tag, 1)
 		}
@@ -95,7 +103,12 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.Metric.Incr("SUCCESS", tag, 1)
 
 		// response time
-		responseTimeTag := []string{fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID"))}
+		responseTimeTag := []string{
+			fmt.Sprintf("service_name:%s", h.ServiceName),
+			fmt.Sprintf("method:%s", r.Method),
+			fmt.Sprintf("endpoint:%s", URL),
+			fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")),
+		}
 
 		h.Metric.Count("RESPONSE_TIME", diff.Milliseconds(), responseTimeTag, 1)
 	}
