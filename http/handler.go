@@ -68,7 +68,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				status = "SERVER_ERROR"
 			}
 
-			tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), fmt.Sprintf("http_status:%d", statusCode), fmt.Sprintf("response_code:%s", responseCode), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("status:%s", status))
+			tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), fmt.Sprintf("http_status:%d", statusCode), fmt.Sprintf("response_code:%s", responseCode), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("status:%s", status), fmt.Sprintf("method:%s", r.Method))
 
 			h.Metric.Incr(table, tag, 1)
 		}
@@ -79,7 +79,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if h.Metric != nil {
-		tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), "http_status:200", "response_code:000000", fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")))
+		tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), "http_status:200", "response_code:000000", fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("method:%s", r.Method))
 
 		h.Metric.Incr("SUCCESS", tag, 1)
 
