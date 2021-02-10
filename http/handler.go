@@ -61,11 +61,11 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 
 		// don't calculate metrics if endpoint is health check
-		if h.Metric != nil && !isHealthEndpoint(r.URL.Path) {
-
+		if h.Metric != nil && !isHealthEndpoint(r.URL.Path, r.Method) {
 			var table string = "ERROR"
 			var statusCode int
 			var responseCode string
+
 			if erResp, ok := h.C.E[err]; ok {
 				statusCode = erResp.HttpStatus
 				responseCode = erResp.Response.ResponseCode
@@ -97,7 +97,7 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// don't calculate metrics if endpoint is health check
-	if h.Metric != nil && !isHealthEndpoint(r.URL.Path) {
+	if h.Metric != nil && !isHealthEndpoint(r.URL.Path, r.Method) {
 		tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), "http_status:200", "response_code:000000", fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("method:%s", r.Method))
 
 		h.Metric.Incr("SUCCESS", tag, 1)
@@ -135,9 +135,13 @@ func PathPattern(input string) string {
 }
 
 // isHealthEndpoint determines whether the endpoint is health check or not
-func isHealthEndpoint(ep string) bool {
+func isHealthEndpoint(ep, method string) bool {
 	healthWords := []string{"health", "liveness", "readiness", "ready"}
 	result := false
+
+	if method != http.MethodGet {
+		return result
+	}
 
 	for _, subStr := range healthWords {
 		isHealth := strings.Contains(ep, subStr)
