@@ -36,8 +36,14 @@ func NewHttpHandler(c HttpHandlerContext, opts ...HandlerOption) func(handler fu
 }
 
 // WithMetric wire statsd client to perkakas handler
-func WithMetric(m *statsd.Client, svcName string) HandlerOption {
+func WithMetric(telegrafHost string, telegrafPort int, svcName string) HandlerOption {
 	return func(h *HttpHandler) {
+		host := fmt.Sprintf("%s:%d", telegrafHost, telegrafPort)
+		m, err := statsd.New(host)
+		if err != nil {
+			panic(err)
+		}
+
 		h.Metric = m
 		h.ServiceName = svcName
 	}
@@ -46,16 +52,20 @@ func WithMetric(m *statsd.Client, svcName string) HandlerOption {
 func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	startHandleRequest := time.Now()
 	data, pageToken, err := h.H(w, r)
+
 	diff := time.Since(startHandleRequest)
 
 	var tag []string
 	URL := PathPattern(r.URL.Path)
 
 	if err != nil {
-		if h.Metric != nil {
+
+		// don't calculate metrics if endpoint is health check
+		if h.Metric != nil && !isHealthEndpoint(r.URL.Path, r.Method) {
 			var table string = "ERROR"
 			var statusCode int
 			var responseCode string
+
 			if erResp, ok := h.C.E[err]; ok {
 				statusCode = erResp.HttpStatus
 				responseCode = erResp.Response.ResponseCode
@@ -68,7 +78,15 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				status = "SERVER_ERROR"
 			}
 
-			tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), fmt.Sprintf("http_status:%d", statusCode), fmt.Sprintf("response_code:%s", responseCode), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("status:%s", status), fmt.Sprintf("method:%s", r.Method))
+			tag = append(tag,
+				fmt.Sprintf("service_name:%s", h.ServiceName),
+				fmt.Sprintf("method:%s", r.Method),
+				fmt.Sprintf("endpoint:%s", URL),
+				fmt.Sprintf("http_status:%d", statusCode),
+				fmt.Sprintf("response_code:%s", responseCode),
+				fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")),
+				fmt.Sprintf("status:%s", status),
+			)
 
 			h.Metric.Incr(table, tag, 1)
 		}
@@ -78,15 +96,21 @@ func (h HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if h.Metric != nil {
+	// don't calculate metrics if endpoint is health check
+	if h.Metric != nil && !isHealthEndpoint(r.URL.Path, r.Method) {
 		tag = append(tag, fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), "http_status:200", "response_code:000000", fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")), fmt.Sprintf("method:%s", r.Method))
 
 		h.Metric.Incr("SUCCESS", tag, 1)
 
 		// response time
-		responseTimeTag := []string{fmt.Sprintf("service_name:%s", h.ServiceName), fmt.Sprintf("endpoint:%s", URL), fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID"))}
+		responseTimeTag := []string{
+			fmt.Sprintf("service_name:%s", h.ServiceName),
+			fmt.Sprintf("method:%s", r.Method),
+			fmt.Sprintf("endpoint:%s", URL),
+			fmt.Sprintf("request_id:%s", r.Header.Get("X-Ktbs-Request-ID")),
+		}
 
-		h.Metric.Incr("RESPONSE_TIME", responseTimeTag, float64(diff.Milliseconds()))
+		h.Metric.Count("RESPONSE_TIME", diff.Milliseconds(), responseTimeTag, 1)
 	}
 
 	h.Write(w, data, pageToken)
@@ -108,4 +132,23 @@ func PathPattern(input string) string {
 	}
 
 	return path
+}
+
+// isHealthEndpoint determines whether the endpoint is health check or not
+func isHealthEndpoint(ep, method string) bool {
+	healthWords := []string{"health", "liveness", "readiness", "ready"}
+	result := false
+
+	if method != http.MethodGet {
+		return result
+	}
+
+	for _, subStr := range healthWords {
+		isHealth := strings.Contains(ep, subStr)
+		if isHealth {
+			result = true
+			break
+		}
+	}
+	return result
 }
