@@ -113,3 +113,26 @@ func main() {
 From the example above, you can see you only care about the data, pageToken and error,
 then this custom handler will construct the response itself.
 This response are refer to [Kitabisa API response standardization](https://app.gitbook.com/@kitabisa-engineering/s/backend/standardization-1/api-response).
+
+## How to use http metrics
+
+This http metrics will send your http metrics (response time, error status, and success status) to telegraf.
+
+Usage:
+
+```go
+handlerCtx := phttp.NewContextHandler(pstructs.Meta{
+	Version: "v1.2.3",
+	Status:  "stable",
+	APIEnv:  "prod-test",
+})
+
+telegrafHost := "telegraf.localhost"
+telegrafPort := 8125
+serviceName := "my-service" // serviceName identifies your service in the telegraf storage (e.g., Influxdb, etc)
+
+phandler := phttp.NewHttpHandler(
+	handlerCtx,
+	phttp.WithMetric(telegrafHost, telegrafPort, serviceName),
+)
+```
