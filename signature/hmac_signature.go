@@ -21,7 +21,10 @@ func IsMatchHmac(data, signature, secretKey string) bool {
 	h.Write([]byte(data))
 
 	expected := h.Sum(nil)
-	sign, _ := hex.DecodeString(signature)
+	sign, err := hex.DecodeString(signature)
+	if err != nil {
+		return false
+	}
 
 	if hmac.Equal(expected, sign) {
 		return true
