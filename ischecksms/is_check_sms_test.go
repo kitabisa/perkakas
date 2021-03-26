@@ -7,6 +7,6 @@ import (
 )
 
 func TestIsCheckSmsIsSuccess(t *testing.T) {
-	source := "pwa"
+	source := "IOS"
 	assert.True(t, isSendingSMS(source))
 }
