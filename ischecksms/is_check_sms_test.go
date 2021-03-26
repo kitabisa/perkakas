@@ -7,6 +7,11 @@ import (
 )
 
 func TestIsCheckSmsIsSuccess(t *testing.T) {
-	source := "IOS"
+	source := "pwa"
 	assert.True(t, isSendingSMS(source))
+}
+
+func TestIsCheckSmsIsFail(t *testing.T) {
+	source := "Android"
+	assert.False(t, isSendingSMS(source))
 }
