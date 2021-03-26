@@ -8,5 +8,5 @@ import (
 
 func TestIsCheckSmsIsSuccess(t *testing.T) {
 	source := "pwa"
-	assert.True(t, isCheckSms(source))
+	assert.True(t, isSendingSMS(source))
 }
