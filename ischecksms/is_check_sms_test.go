@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsCheckSmsIsSuccess(t *testing.T) {
+func TestIsSendingSMSIsSuccess(t *testing.T) {
 	source := "pwa"
 	assert.True(t, isSendingSMS(source))
 }
 
-func TestIsCheckSmsIsFail(t *testing.T) {
+func TestIsSendingSMSIsFail(t *testing.T) {
 	source := "Android"
 	assert.False(t, isSendingSMS(source))
 }
