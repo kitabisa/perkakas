@@ -8,10 +8,10 @@ import (
 
 func TestIsSendingSMSIsSuccess(t *testing.T) {
 	source := "pwa"
-	assert.True(t, isSendingSMS(source))
+	assert.True(t, IsSendingSMS(source))
 }
 
 func TestIsSendingSMSIsFail(t *testing.T) {
 	source := "Android"
-	assert.False(t, isSendingSMS(source))
+	assert.False(t, IsSendingSMS(source))
 }
