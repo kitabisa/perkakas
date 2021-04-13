@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsNotMobileAppSuccess(t *testing.T) {
+func TestIsSourceNotMobileAppSuccess(t *testing.T) {
 	source := "pwa"
-	assert.True(t, IsNotMobileApp(source))
+	assert.True(t, IsSourceNotMobileApp(source))
 }
 
-func TestIsNotMobileAppFail(t *testing.T) {
+func TestIsSourceNotMobileAppFail(t *testing.T) {
 	source := "Android"
-	assert.False(t, IsNotMobileApp(source))
+	assert.False(t, IsSourceNotMobileApp(source))
 }
