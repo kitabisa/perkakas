@@ -34,7 +34,10 @@ func RequestLogger(next http.Handler) http.Handler {
 		ww := cmiddleware.NewWrapResponseWriter(w, r.ProtoMajor)
 
 		var body string
-		if !strings.Contains(r.Header.Get("Content-type"), "multipart/form-data") {
+		if r.Header.Get("Content-type") != "multipart/form-data" &&
+			r.Header.Get("Content-type") != "application/octet-stream" &&
+			r.Header.Get("Content-type") != "application/x-binary" {
+
 			body = httputil.ReadRequestBody(r)
 			if body != "" {
 				bodyClean := new(bytes.Buffer)
