@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"strings"
 
@@ -33,15 +34,21 @@ func RequestLogger(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ww := cmiddleware.NewWrapResponseWriter(w, r.ProtoMajor)
 
-		var body string
-		if r.Header.Get("Content-type") != "multipart/form-data" &&
-			r.Header.Get("Content-type") != "application/octet-stream" &&
-			r.Header.Get("Content-type") != "application/x-binary" {
+		payloadSize := math.Ceil(float64(r.ContentLength / 1000))
 
+		var body string
+		if payloadSize <= 1000 { // print request body if size < 1 MB
 			body = httputil.ReadRequestBody(r)
 			if body != "" {
 				bodyClean := new(bytes.Buffer)
-				if err := json.Compact(bodyClean, []byte(body)); err != nil {
+				err := json.Compact(bodyClean, []byte(body))
+
+				// prevent print error "invalid character '-' in numeric literal" when compacting body if payload has blob data
+				if err != nil &&
+					r.Header.Get("Content-type") != "multipart/form-data" &&
+					r.Header.Get("Content-type") != "application/octet-stream" &&
+					r.Header.Get("Content-type") != "application/x-binary" {
+
 					zlog.Err(err).Send()
 				}
 
