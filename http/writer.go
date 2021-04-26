@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"reflect"
+	"sync"
 
 	"github.com/kitabisa/perkakas/v2/structs"
 )
@@ -29,7 +30,14 @@ func NewContextHandler(meta structs.Meta) HttpHandlerContext {
 	}
 }
 
+var (
+	allData = make(map[string]string)
+	rwm     sync.RWMutex
+)
+
 func (hctx HttpHandlerContext) AddError(key error, value *structs.ErrorResponse) {
+	rwm.Lock()
+	defer rwm.Unlock()
 	hctx.E[key] = value
 }
 
