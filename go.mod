@@ -18,7 +18,7 @@ require (
 	github.com/gojektech/heimdall v5.0.2+incompatible
 	github.com/gojektech/valkyrie v0.0.0-20190210220504-8f62c1e7ba45 // indirect
 	github.com/golang/mock v1.3.1
-	github.com/gomodule/redigo v2.0.0+incompatible
+	github.com/gomodule/redigo v1.8.4
 	github.com/google/uuid v1.1.1
 	github.com/im7mortal/kmutex v1.0.0
 	github.com/influxdata/influxdb1-client v0.0.0-20190809212627-fc22c7df067e
