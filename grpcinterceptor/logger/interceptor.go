@@ -1,4 +1,4 @@
-package unaryinterceptor
+package logger
 
 import (
 	"context"
@@ -8,11 +8,12 @@ import (
 	"google.golang.org/grpc"
 )
 
-func LoggerToContextInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-	reqID := ctx.Value(ctxkeys.CtxXKtbsRequestID).(string)
+func UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+
 	logger := log.Logger
 
-	if reqID != "" {
+	reqID, ok := ctx.Value(ctxkeys.CtxXKtbsRequestID).(string)
+	if ok {
 		logger = log.With().Str(ctxkeys.CtxXKtbsRequestID.String(), reqID).Logger()
 	}
 
