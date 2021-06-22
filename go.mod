@@ -35,6 +35,7 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.17.0
+	google.golang.org/grpc v1.27.0 // indirect
 	gopkg.in/h2non/gock.v1 v1.0.15
 	moul.io/http2curl v1.0.0 // indirect
 )
