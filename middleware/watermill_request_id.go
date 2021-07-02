@@ -15,17 +15,20 @@ func WatermillGetProcessID(message *message.Message) string {
 	return ""
 }
 
+func WatermillSetProcessID(message *message.Message) {
+	processID := uuid.New().String()
+	ctx := context.WithValue(message.Context(), ctxkeys.CtxWatermillProcessID, processID)
+	message.SetContext(ctx)
+}
+
 func WatermillProcessIDMiddleware(h message.HandlerFunc) message.HandlerFunc {
 	return func(message *message.Message) ([]*message.Message, error) {
-		var processID string
-		processID = WatermillGetProcessID(message)
+		processID := WatermillGetProcessID(message)
 		if processID != "" {
 			return h(message)
 		}
 
-		processID = uuid.New().String()
-		ctx := context.WithValue(message.Context(), ctxkeys.CtxWatermillProcessID, processID)
-		message.SetContext(ctx)
+		WatermillSetProcessID(message)
 
 		return h(message)
 	}
