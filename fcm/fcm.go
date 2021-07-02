@@ -9,7 +9,7 @@ import (
 )
 
 type Fcm struct {
-	fapp *firebase.App
+	fapp            *firebase.App
 	messagingClient *messaging.Client
 }
 
@@ -25,7 +25,7 @@ func NewFcm(credentialsFilePath string) (fcm *Fcm, err error) {
 	}
 
 	fcm = &Fcm{
-		fapp: f,
+		fapp:            f,
 		messagingClient: messagingClient,
 	}
 
@@ -37,7 +37,7 @@ func newFirebase(creds string) (app *firebase.App, err error) {
 	return firebase.NewApp(context.Background(), nil, opt)
 }
 
-func firebaseMessagingClient(app *firebase.App) (messagingClient *messaging.Client, err error){
+func firebaseMessagingClient(app *firebase.App) (messagingClient *messaging.Client, err error) {
 	ctx := context.Background()
 	return app.Messaging(ctx)
 }
@@ -45,12 +45,12 @@ func firebaseMessagingClient(app *firebase.App) (messagingClient *messaging.Clie
 func (f *Fcm) send(ctx context.Context, topic, title, body, imageURL string, message map[string]string) (messageID string, err error) {
 	// See documentation on defining a message payload.
 	msg := &messaging.Message{
-		Notification: &messaging.Notification {
-			Title: title,
-			Body: body,
+		Notification: &messaging.Notification{
+			Title:    title,
+			Body:     body,
 			ImageURL: imageURL,
 		},
-		Data: message,
+		Data:  message,
 		Topic: topic,
 	}
 

@@ -95,7 +95,7 @@ func (suite *LogTestSuite) TestFindMaxLevel() {
 		message{Level: WarnLevel},
 		message{Level: ErrorLevel},
 	}
-	
+
 	maxLevel := suite.Logger.findMaxLevel(msgs)
 	assert.Equal(suite.T(), ErrorLevel, maxLevel)
 }

@@ -11,7 +11,7 @@ func TestSendWithoutNotification(t *testing.T) {
 		t.Fail()
 	}
 
-	data := map[string]string {
+	data := map[string]string{
 		"msg": "perkakas test send message to fcm",
 	}
 
@@ -27,7 +27,7 @@ func TestSendWithNotification(t *testing.T) {
 		t.Fail()
 	}
 
-	data := map[string]string {
+	data := map[string]string{
 		"msg": "perkakas test send message to fcm",
 	}
 

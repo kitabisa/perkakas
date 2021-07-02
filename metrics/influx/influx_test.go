@@ -18,9 +18,9 @@ func TestWritePoint(t *testing.T) {
 	mockServer := emptyTestServer()
 
 	config := ClientConfig{
-		Addr:               mockServer.URL,
-		Database:           "myDB",
-		Timeout:            5 * time.Second,
+		Addr:     mockServer.URL,
+		Database: "myDB",
+		Timeout:  5 * time.Second,
 	}
 
 	tags := Tags{
@@ -50,9 +50,9 @@ func TestWriteBatchPoint(t *testing.T) {
 	mockServer := emptyTestServer()
 
 	config := ClientConfig{
-		Addr:               mockServer.URL,
-		Database:           "myDB",
-		Timeout:            5 * time.Second,
+		Addr:     mockServer.URL,
+		Database: "myDB",
+		Timeout:  5 * time.Second,
 	}
 
 	tags := Tags{

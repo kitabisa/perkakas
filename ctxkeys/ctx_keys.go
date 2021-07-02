@@ -12,6 +12,8 @@ var (
 
 	// CtxLogger context key for logger
 	CtxLogger logger = "Ktbs-Logger"
+
+	CtxWatermillProcessID contextKey = "Ktbs-watermill-process-id"
 )
 
 func (c contextKey) String() string {

@@ -18,7 +18,7 @@ type ElasticClient interface {
 	ElasticBulkActions
 }
 
-type ElasticBasicActions interface{
+type ElasticBasicActions interface {
 	Search(ctx context.Context, indexName string, option SearchOption) (result []byte, err error)
 	Store(ctx context.Context, name string, doc interface{}, template *DynamicTemplate) (res *es.IndexResponse, err error)
 	Remove(ctx context.Context, indexName string, id string) (res *es.DeleteResponse, err error)
@@ -32,16 +32,16 @@ type ElasticBulkActions interface {
 }
 
 type BulkProcessor struct {
-	Name string
-	Workers int
-	BulkActions int
-	BulkSize int
+	Name          string
+	Workers       int
+	BulkActions   int
+	BulkSize      int
 	FlushInterval time.Duration
 }
 
 type Client struct {
 	esclient *es.Client
-	Config ClientConfig
+	Config   ClientConfig
 }
 
 type ClientConfig struct {
@@ -50,9 +50,9 @@ type ClientConfig struct {
 
 type SearchOption struct {
 	Query es.Query
-	Sort map[string]bool
-	From int
-	Size int
+	Sort  map[string]bool
+	From  int
+	Size  int
 }
 
 func NewClient(urls ...string) (c ElasticClient, err error) {
@@ -60,7 +60,7 @@ func NewClient(urls ...string) (c ElasticClient, err error) {
 		es.SetURL(urls...),
 		es.SetSniff(false),
 		es.SetHealthcheck(false),
-		es.SetRetrier(NewElasticRetrier(3 * time.Second, onError)),
+		es.SetRetrier(NewElasticRetrier(3*time.Second, onError)),
 	)
 	if err != nil {
 		return
@@ -215,13 +215,13 @@ func (c *Client) BulkStore(ctx context.Context, indexName string, processorName 
 	return
 }
 
-func (c *Client) newBulkProcessor(processor BulkProcessor) (bulkProcessor *es.BulkProcessor, err error){
+func (c *Client) newBulkProcessor(processor BulkProcessor) (bulkProcessor *es.BulkProcessor, err error) {
 	bulkProcessor, err = c.esclient.BulkProcessor().
 		Name(processor.Name).
 		Workers(processor.Workers).
-		BulkActions(processor.BulkActions).        // commit if # requests reach certain of number
-		BulkSize(processor.BulkSize).              // commit when document size reach certain size
-		FlushInterval(processor.FlushInterval).  // commit every interval of time
+		BulkActions(processor.BulkActions).     // commit if # requests reach certain of number
+		BulkSize(processor.BulkSize).           // commit when document size reach certain size
+		FlushInterval(processor.FlushInterval). // commit every interval of time
 		Do(context.Background())
 	return
 }
@@ -230,8 +230,8 @@ func (c *Client) defaultBulkProcessor() {
 	bulkProcessor := BulkProcessor{
 		Name:          "default",
 		Workers:       10,
-		BulkActions:   1000, // flush when reach 1000 requests
-		BulkSize:      2 << 20, // flush when reach 2 MB
+		BulkActions:   1000,            // flush when reach 1000 requests
+		BulkSize:      2 << 20,         // flush when reach 2 MB
 		FlushInterval: 1 * time.Second, // flush every 1 seconds
 	}
 
@@ -243,7 +243,7 @@ func (c *Client) defaultBulkProcessor() {
 	c.Config.BulkProcessors[bulkProcessor.Name] = defaultBulkProcessor
 }
 
-func (c *Client) AddBulkProcessor(bulkProcessor BulkProcessor) (err error){
+func (c *Client) AddBulkProcessor(bulkProcessor BulkProcessor) (err error) {
 	processor, err := c.newBulkProcessor(bulkProcessor)
 	if err != nil {
 		return err
@@ -267,8 +267,6 @@ func (c *Client) GetBulkProcessor(name string) (processor *es.BulkProcessor, err
 	return
 }
 
-func (c *Client) Ping(ctx context.Context, nodeURL string) (*es.PingResult, int, error){
+func (c *Client) Ping(ctx context.Context, nodeURL string) (*es.PingResult, int, error) {
 	return c.esclient.Ping(nodeURL).Do(ctx)
 }
-
-

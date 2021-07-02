@@ -15,13 +15,13 @@ type MyClient struct {
 	ElasticClient
 }
 
-func NewMyClient(url string) *MyClient{
+func NewMyClient(url string) *MyClient {
 	c, err := NewClient(url)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	return &MyClient {
+	return &MyClient{
 		ElasticClient: c,
 	}
 }
@@ -37,9 +37,9 @@ func init() {
 }
 
 type Person struct {
-	ID string `json:"id"`
+	ID   string `json:"id"`
 	Name string `json:"name"`
-	Age int `json:"age"`
+	Age  int    `json:"age"`
 }
 
 func elasticCreateIndex() *DynamicTemplate {
@@ -82,9 +82,9 @@ func elasticCreateIndex() *DynamicTemplate {
 
 func TestClient_Store(t *testing.T) {
 	person := Person{
-		ID: "1234",
+		ID:   "1234",
 		Name: "Alvin Rizki",
-		Age: 17,
+		Age:  17,
 	}
 
 	ctx := context.Background()
@@ -140,15 +140,15 @@ func TestClient_DeleteIndex(t *testing.T) {
 func TestBulkStore(t *testing.T) {
 	ctx := context.Background()
 	docs := []interface{}{
-		Person {
+		Person{
 			ID:   "abcde",
 			Name: "Budi",
-			Age: 17,
+			Age:  17,
 		},
-		Person {
+		Person{
 			ID:   "fghij",
 			Name: "Badu",
-			Age: 50,
+			Age:  50,
 		},
 	}
 

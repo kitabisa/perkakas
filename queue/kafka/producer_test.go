@@ -121,5 +121,3 @@ func TestNewKafkaAsyncProducer(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, producer)
 }
-
-
