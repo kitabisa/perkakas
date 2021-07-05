@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -16,6 +15,5 @@ func TestWatermillProcessIDMiddleware(t *testing.T) {
 
 	producedMsgs, _ := handler(msg)
 	processID := WatermillGetProcessID(producedMsgs[0])
-	fmt.Println("ProcessID", processID)
 	assert.NotEmpty(t, processID)
 }
