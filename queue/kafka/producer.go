@@ -34,56 +34,56 @@ type ProducerConfigOption func(*sarama.Config)
 
 // WithClientID sets the client id in producer configuration
 func WithClientID(clientID string) ProducerConfigOption {
-	return func (c *sarama.Config) {
+	return func(c *sarama.Config) {
 		c.ClientID = clientID
 	}
 }
 
 // WithVerbose sets the logger to output the log into stdout. If you not set this, the producer will discard the log.
 func WithVerbose() ProducerConfigOption {
-	return func (_ *sarama.Config) {
+	return func(_ *sarama.Config) {
 		sarama.Logger = log.New(os.Stdout, "[sarama] ", log.LstdFlags)
 	}
 }
 
 // WithRetryMax sets max retry if producer failed to produce the message. Default 3 if you not set this.
 func WithRetryMax(max int) ProducerConfigOption {
-	return func (c *sarama.Config) {
+	return func(c *sarama.Config) {
 		c.Producer.Retry.Max = max
 	}
 }
 
 // WithRetryBackoff sets duration between retry. Default 100 ms.
 func WithRetryBackoff(duration time.Duration) ProducerConfigOption {
-	return func (c *sarama.Config) {
+	return func(c *sarama.Config) {
 		c.Producer.Retry.Backoff = duration
 	}
 }
 
 // WithReturnSuccesses tells producers to return success. Default disabled.
 func WithReturnSuccesses(isReturnSuccess bool) ProducerConfigOption {
-	return func (c *sarama.Config) {
+	return func(c *sarama.Config) {
 		c.Producer.Return.Successes = isReturnSuccess
 	}
 }
 
 // WithReturnErrors tells the producers to return error. Default enabled.
 func WithReturnErrors(isReturnError bool) ProducerConfigOption {
-	return func (c *sarama.Config) {
+	return func(c *sarama.Config) {
 		c.Producer.Return.Errors = isReturnError
 	}
 }
 
 // WithRequiredAcks sets the level of aknowledement reliability. Default to WaitForLocal.
 func WithRequiredAcks(reqAcks sarama.RequiredAcks) ProducerConfigOption {
-	return func (c *sarama.Config) {
+	return func(c *sarama.Config) {
 		c.Producer.RequiredAcks = reqAcks
 	}
 }
 
 // WithMaxMessageBytes sets the max permitted size of message. Defaults to 1000000.
 func WithMaxMessageBytes(max int) ProducerConfigOption {
-	return func (c *sarama.Config) {
+	return func(c *sarama.Config) {
 		c.Producer.MaxMessageBytes = max
 	}
 }

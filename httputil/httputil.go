@@ -13,6 +13,7 @@ import (
 )
 
 const passwordPattern = `(\\{0,1}"password\\{0,1}"):\s*\\{0,1}"(.*?)\\{0,1}"`
+
 var passRemover *regexp.Regexp
 
 func init() {

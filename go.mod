@@ -7,6 +7,7 @@ require (
 	github.com/DataDog/datadog-go v4.2.0+incompatible
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/Shopify/sarama v1.19.0
+	github.com/ThreeDotsLabs/watermill v1.1.1
 	github.com/antihax/optional v1.0.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
 	github.com/ashwanthkumar/slack-go-webhook v0.0.0-20200209025033-430dd4e66960
@@ -35,7 +36,7 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/text v0.3.2
 	google.golang.org/api v0.17.0
-	google.golang.org/grpc v1.27.0 // indirect
+	google.golang.org/grpc v1.27.0
 	gopkg.in/h2non/gock.v1 v1.0.15
 	moul.io/http2curl v1.0.0 // indirect
 )

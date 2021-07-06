@@ -68,4 +68,3 @@ func init() {
 	MonthId[time.November] = "November"
 	MonthId[time.December] = "Desember"
 }
-

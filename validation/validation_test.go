@@ -8,15 +8,15 @@ import (
 
 func TestIsExistSuccess(t *testing.T) {
 	platformName := "pwa"
-	assert.True(t, IsExist(platformName, []string{"pwa","android"}))
+	assert.True(t, IsExist(platformName, []string{"pwa", "android"}))
 }
 
 func TestIsExistSuccessUpperCase(t *testing.T) {
 	platformName := "iOS"
-	assert.True(t, IsExist(platformName, []string{"pwa","ios"}))
+	assert.True(t, IsExist(platformName, []string{"pwa", "ios"}))
 }
 
 func TestIsExistNotFoundFail(t *testing.T) {
 	platformName := "KanvasHebat"
-	assert.False(t, IsExist(platformName, []string{"pwa","iOS"}))
+	assert.False(t, IsExist(platformName, []string{"pwa", "iOS"}))
 }

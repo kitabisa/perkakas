@@ -2,7 +2,7 @@ package elastic
 
 type DynamicTemplate struct {
 	Settings map[string]interface{} `json:"settings,omitempty"`
-	Mappings *Mappings                   `json:"mappings,omitempty"`
+	Mappings *Mappings              `json:"mappings,omitempty"`
 }
 
 type Mappings struct {
